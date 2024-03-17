@@ -5,20 +5,23 @@ import {
   FlatList,
   StyleSheet,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
-import {Picker} from '@react-native-picker/picker';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import {fetchFlights} from '../services/flightService';
 import {FlightData} from '../types/flightData';
 import {RootStackParamList} from '../types/navigationParams';
 import FlightCard from '../components/FlightCard';
+import FlightSort from '../components/FlightSort';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Flights'>;
 
 const FlightResults = ({navigation, route}: Props) => {
   const [flights, setFlights] = useState<FlightData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [filter, setFilter] = useState('All');
   const [sort, setSort] = useState('priceAsc');
 
@@ -71,7 +74,7 @@ const FlightResults = ({navigation, route}: Props) => {
       info +=
         flightResult?.travellerData.adults > 0
           ? `| ${flightResult?.travellerData.adults} ${
-              flightResult?.travellerData.adults > 1 ? 'Adult' : 'Adults'
+              flightResult?.travellerData.adults > 1 ? 'Adult ' : 'Adults '
             }`
           : '';
     }
@@ -97,44 +100,40 @@ const FlightResults = ({navigation, route}: Props) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.infoContainer}>
-        <Text style={styles.primaryText}>
-          {flightResult?.fromAirport} - {flightResult?.toAirport}
-        </Text>
-        <Text style={styles.secondaryText}>
-          {flightResult?.departureDate.split('-')[0]} {renderTravellerInfo()} |{' '}
-          {flightResult?.travellerData.classType}
-        </Text>
+      <View style={styles.headerContainer}>
+        <View style={{flex: 1}}>
+          <Text style={styles.primaryText}>
+            {flightResult?.fromAirport} - {flightResult?.toAirport}
+          </Text>
+          <Text style={styles.secondaryText}>
+            {flightResult?.departureDate.split('-')[0]} {renderTravellerInfo()}{' '}
+            | {flightResult?.travellerData.classType}
+          </Text>
+        </View>
+        <TouchableOpacity
+          style={styles.filterButton}
+          onPress={() => setFilterModalVisible(true)}>
+          {/* <Text style={styles.filterText}>Filters</Text> */}
+          <Icon name="options" size={24} color="#333" />
+        </TouchableOpacity>
       </View>
 
-      <Picker
-        style={styles.picker}
-        selectedValue={filter}
-        dropdownIconColor={'#5a5a5a'}
-        onValueChange={(itemValue, itemIndex) => setFilter(itemValue)}>
-        <Picker.Item label="All Airlines" value="All" />
-
-        {flights.map((flight, index) => (
-          <Picker.Item
-            key={index}
-            label={flight.airline}
-            value={flight.airline}
-          />
-        ))}
-      </Picker>
-      <Picker
-        style={styles.picker}
-        selectedValue={sort}
-        dropdownIconColor={'#5a5a5a'}
-        onValueChange={(itemValue, itemIndex) => setSort(itemValue)}>
-        <Picker.Item label="Cheapest first" value="priceAsc" />
-        <Picker.Item label="Highest first" value="priceDesc" />
-      </Picker>
+      <View style={styles.filtersContainer}></View>
       <FlatList
         style={styles.listContainer}
         data={getFilteredAndSortedFlights()}
         keyExtractor={item => item.id.toString()}
         renderItem={({item}) => <FlightCard flight={item} />}
+      />
+
+      <FlightSort
+        filter={filter}
+        setFilter={setFilter}
+        sort={sort}
+        setSort={setSort}
+        flights={flights}
+        isOpen={filterModalVisible}
+        close={() => setFilterModalVisible(false)}
       />
     </View>
   );
@@ -154,12 +153,25 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: '#003366',
   },
-  infoContainer: {
-    borderWidth: 1,
+
+  filtersContainer: {
+    marginBottom: 2,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  filterButton: {
+    flexDirection: 'row',
+  },
+
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     borderColor: '#eaeaea',
     backgroundColor: '#fafafa',
-    padding: 10,
+    borderWidth: 1,
     borderRadius: 4,
+    padding: 10,
     marginBottom: 10,
   },
 
@@ -173,13 +185,9 @@ const styles = StyleSheet.create({
     marginTop: 4,
     color: '#6a6a6a',
   },
-  picker: {
-    color: '#5a5a5a',
-    backgroundColor: '#fafafa',
-  },
+
   listContainer: {
-    paddingTop: 10,
-    marginBottom: 10,
+    paddingBottom: 10,
   },
 });
 

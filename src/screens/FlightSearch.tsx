@@ -14,7 +14,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {RootStackParamList} from '../types/navigationParams';
 import {useFlightData} from '../context/FlightContext';
 import {formatDate, getAllCities} from '../utils';
-import CityModal from '../components/CityModal';
+import CityModal from '../components/CitySelectionModal';
 import CalendarView from '../components/CalendarView';
 import {TravellerData} from '../types/flightData';
 import TravellerAndClass from '../components/TravellerAndClass';
@@ -94,7 +94,7 @@ const FlightSearch = ({navigation}: FlightSearchProps) => {
 
   return (
     <ScrollView style={[styles.container]}>
-      <Text style={styles.mainHeading}>Search flights</Text>
+      <Text style={styles.mainHeading}>Book Your Flight</Text>
 
       <View style={styles.tripInfo}>
         <View style={styles.infoContainer}>
@@ -237,11 +237,12 @@ const FlightSearch = ({navigation}: FlightSearchProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#eaeaea',
-    paddingTop: 50,
+    backgroundColor: '#efefef',
+    paddingTop: '50%',
     paddingHorizontal: 14,
   },
   mainHeading: {
+    textAlign: 'center',
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
