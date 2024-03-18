@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#efefef',
-    paddingTop: '50%',
+    paddingTop: '40%',
     paddingHorizontal: 14,
   },
   mainHeading: {
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#eaeaea',
     backgroundColor: '#fafafa',
-    padding: 6,
+    padding: 10,
     borderRadius: 4,
   },
   content: {

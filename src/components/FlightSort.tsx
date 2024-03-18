@@ -34,7 +34,11 @@ const FlightSort = ({
   );
 
   return (
-    <Modal transparent={true} visible={isOpen} onRequestClose={close}>
+    <Modal
+      transparent={true}
+      animationType="fade"
+      visible={isOpen}
+      onRequestClose={close}>
       <View style={styles.centeredView}>
         <Appbar.Header style={styles.appBar}>
           <Appbar.BackAction onPress={close} />
